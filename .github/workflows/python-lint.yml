@@ -1,1 +1,8 @@
+on:
+  workflow_call:
+    inputs:
+      python_version:
+        default: '3.10.2'
+        required: false
+        type: string
 
