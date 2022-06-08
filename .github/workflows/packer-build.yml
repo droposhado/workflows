@@ -1,0 +1,35 @@
+on:
+  workflow_call:
+    inputs:
+      FILE:
+        required: true
+        type: string
+
+      OS:
+        required: true
+        type: string
+        default: ubuntu-latest
+
+#     secrets:
+#       token:
+#         required: true
+
+jobs:
+  lint:
+    runs-on: ${{ inputs.OS }}
+    permissions:
+      contents: read
+
+    steps:
+
+      - uses: actions/checkout@v3
+
+      # build artifact
+      - name: Build Artifact
+        uses: hashicorp/packer-github-actions@master
+        with:
+          command: build
+          arguments: "-color=false -on-error=abort"
+          target: ${{ inputs.file }}
+        env:
+          PACKER_LOG: 1
