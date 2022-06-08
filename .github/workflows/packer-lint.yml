@@ -1,11 +1,11 @@
 on:
   workflow_call:
     inputs:
-      FILE:
+      file:
         required: true
         type: string
 
-      OS:
+      os:
         required: true
         type: string
         default: ubuntu-latest
@@ -16,7 +16,7 @@ on:
 
 jobs:
   lint:
-    runs-on: ${{ inputs.OS }}
+    runs-on: ${{ inputs.os }}
     permissions:
       contents: read
 
@@ -36,4 +36,4 @@ jobs:
         with:
           command: validate
           arguments: -syntax-only
-          target: ${{ inputs.FILE }}
+          target: ${{ inputs.file }}
