@@ -32,7 +32,7 @@ jobs:
         uses: hashicorp/packer-github-actions@master
         with:
           command: init
-          arguments: "-color=false -on-error=abort"
+          arguments: "-on-error=abort"
           target: ${{ inputs.file }}
           working_directory: ${{ inputs.path }}
 
