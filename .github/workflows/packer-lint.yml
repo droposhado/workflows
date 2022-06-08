@@ -1,1 +1,37 @@
+on:
+  workflow_call:
+    inputs:
+      FILE:
+        required: true
+        type: string
 
+      OS:
+        required: true
+        type: string
+        default: ubuntu-latest
+
+#     secrets:
+#       token:
+#         required: true
+
+jobs:
+  lint:
+    runs-on: ${{ inputs.OS }}
+    permissions:
+      contents: read
+
+    steps:
+
+      # fix backwards incompatibilities in template
+      - name: Fix Template
+        uses: hashicorp/packer-github-actions@master
+        with:
+          command: fix
+
+      # validate templates
+      - name: Validate Template
+        uses: hashicorp/packer-github-actions@master
+        with:
+          command: validate
+          arguments: -syntax-only
+          target: ${{ inputs.FILE }}
