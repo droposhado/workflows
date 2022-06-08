@@ -22,6 +22,8 @@ jobs:
 
     steps:
 
+      - uses: actions/checkout@v3
+
       # fix backwards incompatibilities in template
       - name: Fix Template
         uses: hashicorp/packer-github-actions@master
