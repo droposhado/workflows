@@ -6,7 +6,6 @@ on:
         type: string
 
       os:
-        required: true
         type: string
         default: ubuntu-latest
 
