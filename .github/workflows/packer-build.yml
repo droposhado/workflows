@@ -10,9 +10,9 @@ on:
         type: string
         default: ubuntu-latest
 
-#     secrets:
-#       token:
-#         required: true
+    secrets:
+      TOKEN:
+        required: true
 
 jobs:
   lint:
