@@ -10,15 +10,18 @@ on:
         type: string
         default: ubuntu-latest
 
-#     secrets:
-#       token:
-#         required: true
+    secrets:
+      token:
+        required: true
 
 jobs:
   lint:
     runs-on: ${{ inputs.os }}
     permissions:
       contents: read
+
+    env:
+      PKR_VAR_token: ${ secrets.token }}
 
     steps:
 
