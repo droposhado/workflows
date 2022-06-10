@@ -7,6 +7,7 @@ on:
 
       os:
         type: string
+        required: true
         default: ubuntu-latest
 
       path:
@@ -23,6 +24,9 @@ jobs:
     runs-on: ${{ inputs.os }}
     permissions:
       contents: read
+
+    env:
+      PKR_VAR_token: ${ secrets.token }}
 
     steps:
 
