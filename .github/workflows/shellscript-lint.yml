@@ -1,0 +1,20 @@
+name: Shellscript lint
+
+on:
+
+  push:
+    branches: main
+
+jobs:
+
+  shell-linter:
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Checkout repo
+        uses: actions/checkout@v2
+
+      - name: Checkout repo
+        run: shellcheck --shell=bash *.sh
