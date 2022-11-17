@@ -4,15 +4,6 @@ name: Docker build and push
 on:
   workflow_call:
     inputs:
-      registry:
-        required: true
-        type: string
-      username:
-        required: true
-        type: string
-      password:
-        required: true
-        type: string
       context:
         required: false
         default: .
@@ -25,13 +16,21 @@ on:
         required: false
         default: true
         type: boolean
+    secrets:
+      registry:
+        required: true
+      username:
+        required: true
+      password:
+        required: true
       tags:
         required: false
-        type: string
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v3
 
