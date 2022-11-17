@@ -12,13 +12,15 @@ on:
         required: false
         default: ./Dockerfile
         type: string
+      registry:
+        required: true
+        default: 'docker.io'  # 'ghcr.io', 'registry.fly.io'
+        type: string
       push:
         required: false
         default: true
         type: boolean
     secrets:
-      registry:
-        required: true
       username:
         required: true
       password:
