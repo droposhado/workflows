@@ -20,13 +20,15 @@ on:
         required: false
         default: true
         type: boolean
+      tags:
+        required: false
+        type: string
     secrets:
       username:
         required: true
       password:
         required: true
-      tags:
-        required: false
+
 
 jobs:
   build:
@@ -52,4 +54,4 @@ jobs:
           context: ${{ inputs.context }}
           file: ${{ inputs.file }}
           push: ${{ inputs.push }}
-          tags: ${{ secrets.tags }}
+          tags: ${{ inputs.tags }}
