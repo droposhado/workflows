@@ -29,9 +29,8 @@ on:
       password:
         required: true
 
-
 jobs:
-  build:
+  login-build-push:
     runs-on: ubuntu-latest
     permissions:
       contents: read
