@@ -14,7 +14,10 @@ on:
         type: string
       registry:
         required: true
-        default: 'docker.io'  # 'ghcr.io', 'registry.fly.io'
+        default: 'docker.io'
+        # default: 'quay.io'
+        # default: 'ghcr.io'
+        # default: 'registry.fly.io'
         type: string
       push:
         required: false
