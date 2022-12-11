@@ -1,0 +1,60 @@
+name: Python best practices
+
+on:
+  workflow_call:
+    inputs:
+      context:
+        required: false
+        default: .
+        type: string
+      python_version:
+        required: true
+        type: string
+
+jobs:
+
+  py-best-practices: 
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    strategy:
+      matrix:
+        name:
+          - bandit
+          - flake8
+          - liccheck
+          - isort
+          - pylint
+
+        include: 
+          - name: bandit
+            cmd: bandit -r ${{ inputs.context }}
+
+          - name: flake8
+            cmd: flake8
+
+          - name: liccheck
+            cmd: liccheck
+
+          - name: isort
+            cmd: isort ${{ inputs.context }}
+
+          - name: pylint
+            cmd: pylint
+
+    steps:
+
+      - name: checkout repo
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "${{ inputs.python_version }}"
+
+      - name: Install deps
+        run: |
+          pip install -r requirements.txt
+          pip install -r requirements-dev.txt
+
+      - run: ${{ matrix.cmd }}
