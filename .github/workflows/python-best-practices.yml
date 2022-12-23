@@ -44,7 +44,7 @@ jobs:
             cmd: isort ${{ inputs.context }}
 
           - name: pylint
-            cmd: pylint
+            cmd: pylint ${{ inputs.context }}
 
     steps:
 
