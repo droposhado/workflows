@@ -1,5 +1,9 @@
 name: Python best practices
 
+# I know that I could install the packages here using this workflow,
+# but I prefer that each package has this as an explicit dependency
+# in a file
+
 on:
   workflow_call:
     inputs:
