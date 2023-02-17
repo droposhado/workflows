@@ -57,3 +57,8 @@ jobs:
           file: ${{ inputs.file }}
           push: ${{ inputs.push }}
           tags: ${{ inputs.tags }}
+
+          # This flag represents a bug in deployment,
+          # adding it partially solves it, however it
+          # must be checked
+          provenance: false
