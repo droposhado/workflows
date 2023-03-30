@@ -105,6 +105,9 @@ jobs:
           # must be checked
           provenance: ${{ inputs.provenance }}
 
+      - name: Image list
+        run: docker image ls
+
       # inputs.tags_local forces read local copy
       # because it was reading remote and not local
       - name: Run Trivy vulnerability scanner
