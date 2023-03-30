@@ -4,6 +4,9 @@ name: Docker build and push
 on:
   workflow_call:
     inputs:
+
+    # Registry
+
       context:
         required: false
         default: .
@@ -30,7 +33,32 @@ on:
         required: false
         default: false
         type: boolean
+
+    # Trivy
+
+      vuln-type:
+        required: false
+        default: 'os,library'
+        type: string
+      severity:
+        required: false
+        default: 'CRITICAL,HIGH'
+        type: string
+      format:
+        required: false
+        default: 'table'
+        type: string
+      exit-code:
+        required: false
+        default: '1'
+        type: string
+      ignore-unfixed:
+        required: false
+        default: true
+        type: boolean
     secrets:
+
+    # Registry
       username:
         required: true
       password:
@@ -54,7 +82,30 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
-      - name: Build and push
+      - name: Build
+        uses: docker/build-push-action@v3
+        with:
+          context: ${{ inputs.context }}
+          file: ${{ inputs.file }}
+          push: false
+          tags: ${{ inputs.tags }}
+
+          # This flag represents a bug in deployment,
+          # adding it partially solves it, however it
+          # must be checked
+          provenance: ${{ inputs.provenance }}
+
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: ${{ inputs.tags }}
+          format: ${{ inputs.format }}
+          exit-code: ${{ inputs.exit-code }}
+          ignore-unfixed: ${{ inputs.ignore-unfixed }}
+          vuln-type: ${{ inputs.vuln-type }}
+          severity: ${{ inputs.severity }}
+
+      - name: Push
         uses: docker/build-push-action@v3
         with:
           context: ${{ inputs.context }}
