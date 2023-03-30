@@ -87,7 +87,7 @@ jobs:
         with:
           context: ${{ inputs.context }}
           file: ${{ inputs.file }}
-          push: false
+          push: true
           tags: ${{ inputs.tags }}
 
           # This flag represents a bug in deployment,
