@@ -113,7 +113,7 @@ jobs:
       - name: Docker buildx
         run: |
           docker buildx build --file ${{ inputs.file }} --provenance '${{ inputs.provenance }}' \
-          --tag ${{ inputs.tag }} ${{ inputs.context }}
+          --tag ${{ inputs.tag }} --output type=docker ${{ inputs.context }}
 
 
 
