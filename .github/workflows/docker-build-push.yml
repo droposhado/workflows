@@ -127,7 +127,7 @@ jobs:
 
 
       - name: Pip list
-        run: docker container run -it --rm ${{ inputs.repo }}:${{ inputs.tag }} pip freeze
+        run: docker container run -t --rm ${{ inputs.repo }}:${{ inputs.tag }} pip freeze
 
 
 
