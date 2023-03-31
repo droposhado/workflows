@@ -22,10 +22,9 @@ on:
         # default: 'ghcr.io'
         # default: 'registry.fly.io'
         type: string
-      push:
+      repo:
         required: false
-        default: true
-        type: boolean
+        type: string
       tag:
         required: false
         type: string
@@ -113,7 +112,9 @@ jobs:
       - name: Docker buildx
         run: |
           docker buildx build --file ${{ inputs.file }} --provenance '${{ inputs.provenance }}' \
-          --tag ${{ inputs.tag }} --output type=docker ${{ inputs.context }}
+          --tag ${{ inputs.regitry }}/${{ inputs.repo }}:${{ inputs.tag }} \
+          --tag ${{ inputs.repo }}:${{ inputs.tag }} \
+          --output type=docker ${{ inputs.context }}
 
 
 
@@ -142,5 +143,5 @@ jobs:
       - name: Trivy scan
         run: |
           trivy image --severity ${{ inputs.severity }} --vuln-type ${{ inputs.vuln-type }} \
-             --exit-code ${{ inputs.exit-code }} --format ${{ inputs.format }} \
-             ${{ inputs.tag }}
+             --exit-code ${{ inputs.exit-code }} --format ${{ inputs.format }} --no-progress \
+             ${{ inputs.repo }}:${{ inputs.tag }}
