@@ -59,7 +59,7 @@ jobs:
       # nproc dependency block
 
       - name: nproc dependency install
-        if: matrix.cmd == 'pylint'
+        if: matrix.name == 'pylint'
         run: |
           sudo apt-get update -qq
           sudo apt-get install coreutils
