@@ -112,7 +112,7 @@ jobs:
       - name: Docker buildx
         run: |
           docker buildx build --file ${{ inputs.file }} --provenance '${{ inputs.provenance }}' \
-          --tag ${{ inputs.regitry }}/${{ inputs.repo }}:${{ inputs.tag }} \
+          --tag ${{ inputs.registry }}/${{ inputs.repo }}:${{ inputs.tag }} \
           --tag ${{ inputs.repo }}:${{ inputs.tag }} \
           --output type=docker ${{ inputs.context }}
 
