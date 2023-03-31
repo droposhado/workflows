@@ -104,9 +104,6 @@ jobs:
 #           # must be checked
 #           provenance: ${{ inputs.provenance }}
 
-      - name: Set up containerd
-        uses: crazy-max/ghaction-setup-containerd@v2
-
 
 
 
@@ -154,7 +151,7 @@ jobs:
       - name: Trivy scan
         run: |
           trivy image --severity ${{ inputs.severity }} --vuln-type ${{ inputs.vuln-type }} \
-             --exit-code ${{ inputs.exit-code }} --format ${{ inputs.format }} --no-progress --scanners vuln \
+             --exit-code ${{ inputs.exit-code }} --format ${{ inputs.format }} --no-progress \
              ${{ inputs.repo }}:${{ inputs.tag }}
 
 
