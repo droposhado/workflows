@@ -150,7 +150,11 @@ jobs:
 
 
 
-
+      - name: Trivy scan
+        run: |
+          trivy image --severity ${{ inputs.severity }} --vuln-type ${{ inputs.vuln-type }} \
+             --exit-code ${{ inputs.exit-code }} --format ${{ inputs.format }} \
+             nonexistetagwarranty2230marslunarlith/646464468764165489:sdf
 
 
 
