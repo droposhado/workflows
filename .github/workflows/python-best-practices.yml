@@ -11,13 +11,16 @@ on:
         required: false
         default: .
         type: string
+      package_dir:
+        required: true
+        type: string
       python_version:
         required: true
         type: string
 
 jobs:
 
-  py-best-practices: 
+  python-best-practices: 
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -25,17 +28,17 @@ jobs:
       matrix:
         name:
           - bandit
-          - flake8
+          - ruff
           - liccheck
           - isort
           - pylint
 
         include: 
           - name: bandit
-            cmd: bandit -r ${{ inputs.context }}
+            cmd: bandit -v -r ${{ inputs.context }} -c pyproject.toml
 
-          - name: flake8
-            cmd: flake8
+          - name: ruff
+            cmd: ruff check ${{ inputs.context }}
 
           - name: liccheck
             cmd: liccheck
@@ -44,7 +47,7 @@ jobs:
             cmd: isort ${{ inputs.context }}
 
           - name: pylint
-            cmd: pylint ${{ inputs.context }}
+            cmd: pylint ${{ inputs.package_dir }}
 
     steps:
 
@@ -56,9 +59,44 @@ jobs:
         with:
           python-version: "${{ inputs.python_version }}"
 
-      - name: Install deps
-        run: |
-          pip install -r requirements.txt
-          pip install -r requirements-dev.txt
+      # requirements.txt block
+
+      - name: Check file existence
+        id: check_requirement_file
+        uses: andstor/file-existence-action@v2
+        with:
+          files: "requirements.txt"
+
+      - name: Install requirements.txt deps
+        if: steps.check_requirement_file.outputs.files_exists == 'true'
+        run: pip install -U -r ${{ inputs.context }}/requirements.txt
+
+      # requirements-dev.txt block
+
+      - name: Check file existence
+        id: check_requirement_dev_file
+        uses: andstor/file-existence-action@v2
+        with:
+          files: "requirements-dev.txt"
+
+      - name: Install requirements-dev.txt deps
+        if: steps.check_requirement_dev_file.outputs.files_exists == 'true'
+        run: pip install -U -r ${{ inputs.context }}/requirements-dev.txt
+
+      # pyproject block
+
+      - name: Check file existence
+        id: check_pyproject_file
+        uses: andstor/file-existence-action@v2
+        with:
+          files: "pyproject.toml"
+
+      - name: Install pyproject.toml deps
+        # if requirements.txt exists, it is not necessary to use this
+        if: |
+          steps.check_pyproject_file.outputs.files_exists == 'true' &&
+          ! steps.check_requirement_file.outputs.files_exists == 'true'
+        
+        run: pip install -U ${{ inputs.context }}
 
       - run: ${{ matrix.cmd }}
