@@ -35,7 +35,7 @@ on:
         type: boolean
 
     # Trivy
-      version:
+      trivy_version:
         required: false
         default: 'v0.18.3'
         type: string
@@ -136,7 +136,7 @@ jobs:
 
       - name: Image list
         run: curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | \
-          sudo sh -s -- -b /usr/local/bin ${{ inputs.version }}
+          sh -s -- -b /usr/local/bin ${{ inputs.trivy_version }}
 
       - name: Trivy scan
         run: |
