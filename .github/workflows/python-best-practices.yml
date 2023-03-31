@@ -11,9 +11,6 @@ on:
         required: false
         default: .
         type: string
-      package_dir:
-        required: true
-        type: string
       python_version:
         required: true
         type: string
@@ -47,7 +44,7 @@ jobs:
             cmd: isort ${{ inputs.context }}
 
           - name: pylint
-            cmd: pylint --recursive=y ${{ inputs.package_dir }}
+            cmd: pylint -j $(nproc) --recursive=y ${{ inputs.context }}
 
     steps:
 
@@ -58,6 +55,16 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: "${{ inputs.python_version }}"
+
+      # apt-get update block
+
+      - name: Update package index
+        run: apt-get update -qq
+
+      # apt-get install block
+
+      - name: Install nproc
+        run: apt-get install coreutils
 
       # requirements.txt block
 
