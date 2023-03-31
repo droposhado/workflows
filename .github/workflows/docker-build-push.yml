@@ -26,10 +26,7 @@ on:
         required: false
         default: true
         type: boolean
-      tags_remote:
-        required: false
-        type: string
-      tags_local:
+      tag:
         required: false
         type: string
       provenance:
@@ -38,7 +35,10 @@ on:
         type: boolean
 
     # Trivy
-
+      version:
+        required: false
+        default: 'v0.18.3'
+        type: string
       vuln-type:
         required: false
         default: 'os,library'
@@ -90,45 +90,56 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
-      - name: Build
-        uses: docker/build-push-action@v3
-        with:
-          context: ${{ inputs.context }}
-          file: ${{ inputs.file }}
-          push: false
-          tags: |
-            ${{ inputs.tags_local }}
-            ${{ inputs.tags_remote }}
+#       - name: Build
+#         uses: docker/build-push-action@v3
+#         with:
+#           context: ${{ inputs.context }}
+#           file: ${{ inputs.file }}
+#           push: false
+#           tags: |
+#             ${{ inputs.tags_local }}
+#             ${{ inputs.tags_remote }}
 
-          # This flag represents a bug in deployment,
-          # adding it partially solves it, however it
-          # must be checked
-          provenance: ${{ inputs.provenance }}
+#           # This flag represents a bug in deployment,
+#           # adding it partially solves it, however it
+#           # must be checked
+#           provenance: ${{ inputs.provenance }}
+
+
+
+
+
+
+      - name: Docker buildx
+        run: |
+          docker buildx build --file ${{ inputs.file }} --provenance '${{ inputs.provenance }}' \
+          --tag ${{ inputs.tag }}
+
+
+
+
+
 
       - name: Image list
         run: docker image ls
 
-      # inputs.tags_local forces read local copy
-      # because it was reading remote and not local
-      - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@master
-        with:
-          image-ref: ${{ inputs.tags_local }}
-          format: ${{ inputs.format }}
-          exit-code: ${{ inputs.exit-code }}
-          ignore-unfixed: ${{ inputs.ignore-unfixed }}
-          vuln-type: ${{ inputs.vuln-type }}
-          severity: ${{ inputs.severity }}
 
-      - name: Push
-        uses: docker/build-push-action@v3
-        with:
-          context: ${{ inputs.context }}
-          file: ${{ inputs.file }}
-          push: ${{ inputs.push }}
-          tags: ${{ inputs.tags }}
 
-          # This flag represents a bug in deployment,
-          # adding it partially solves it, however it
-          # must be checked
-          provenance: ${{ inputs.provenance }}
+
+
+
+
+
+
+
+
+
+      - name: Image list
+        run: curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | \
+          sudo sh -s -- -b /usr/local/bin ${{ inputs.version }}
+
+      - name: Trivy scan
+        run: |
+          trivy image --severity ${{ inputs.severity }} --vuln-type ${{ inputs.vuln-type }} \
+             --exit-code ${{ inputs.exit-code }} --format ${{ inputs.format }} \
+             ${{ inputs.tags }}
