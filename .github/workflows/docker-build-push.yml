@@ -141,7 +141,7 @@ jobs:
 
       - name: Trivy scan
         run: |
-          trivy image --severity ${{ inputs.severity }} --vuln-type ${{ inputs.vuln-type }} \
+          trivy --debug image --severity ${{ inputs.severity }} --vuln-type ${{ inputs.vuln-type }} \
              --exit-code ${{ inputs.exit-code }} --format ${{ inputs.format }} --no-progress \
              ${{ inputs.repo }}:${{ inputs.tag }}
 
@@ -150,7 +150,7 @@ jobs:
 
       - name: Trivy scan
         run: |
-          trivy image --severity ${{ inputs.severity }} --vuln-type ${{ inputs.vuln-type }} \
+          trivy --debug image --severity ${{ inputs.severity }} --vuln-type ${{ inputs.vuln-type }} \
              --exit-code ${{ inputs.exit-code }} --format ${{ inputs.format }} --no-progress \
              ${{ inputs.repo }}:${{ inputs.tag }}
 
@@ -158,6 +158,6 @@ jobs:
 
       - name: Trivy scan
         run: |
-          trivy image --severity ${{ inputs.severity }} --vuln-type ${{ inputs.vuln-type }} \
+          trivy --debug image --severity ${{ inputs.severity }} --vuln-type ${{ inputs.vuln-type }} \
              --exit-code ${{ inputs.exit-code }} --format ${{ inputs.format }} \
              quay.io/droposhado/panorama
