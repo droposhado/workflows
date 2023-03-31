@@ -56,15 +56,13 @@ jobs:
         with:
           python-version: "${{ inputs.python_version }}"
 
-      # apt-get update block
+      # nproc dependency block
 
-      - name: Update package index
-        run: apt-get update -qq
-
-      # apt-get install block
-
-      - name: Install nproc
-        run: apt-get install coreutils
+      - name: nproc dependency install
+        if: matrix.cmd == 'pylint'
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install coreutils
 
       # requirements.txt block
 
