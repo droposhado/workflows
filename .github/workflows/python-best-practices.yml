@@ -47,7 +47,7 @@ jobs:
             cmd: isort ${{ inputs.context }}
 
           - name: pylint
-            cmd: pylint ${{ inputs.package_dir }}
+            cmd: pylint --recursive=y ${{ inputs.package_dir }}
 
     steps:
 
