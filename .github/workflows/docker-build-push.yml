@@ -144,9 +144,15 @@ jobs:
       - name: Trivy scan
         run: |
           trivy image --severity ${{ inputs.severity }} --vuln-type ${{ inputs.vuln-type }} \
-             --exit-code ${{ inputs.exit-code }} --format ${{ inputs.format }} --no-progress \
+             --exit-code ${{ inputs.exit-code }} --format ${{ inputs.format }} \
              ${{ inputs.repo }}:${{ inputs.tag }}
 
+
+      - name: Trivy scan
+        run: |
+          trivy image --severity ${{ inputs.severity }} --vuln-type ${{ inputs.vuln-type }} \
+             --exit-code ${{ inputs.exit-code }} --format ${{ inputs.format }} --ignore-unfixed  \
+             ${{ inputs.repo }}:${{ inputs.tag }}
 
 
 
