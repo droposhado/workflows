@@ -134,7 +134,7 @@ jobs:
 
 
 
-      - name: Image list
+      - name: Trivy install
         run: curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | \
           sh -s -- -b /usr/local/bin ${{ inputs.trivy_version }}
 
