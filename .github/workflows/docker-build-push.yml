@@ -34,6 +34,7 @@ on:
         type: boolean
 
     # Trivy
+
       trivy_version:
         required: false
         default: 'v0.18.3'
@@ -58,6 +59,7 @@ on:
         required: false
         default: true
         type: boolean
+
     secrets:
 
     # Registry
@@ -89,75 +91,25 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
-#       - name: Build
-#         uses: docker/build-push-action@v3
-#         with:
-#           context: ${{ inputs.context }}
-#           file: ${{ inputs.file }}
-#           push: false
-#           tags: |
-#             ${{ inputs.tags_local }}
-#             ${{ inputs.tags_remote }}
+      - name: Build
+        uses: docker/build-push-action@v3
+        with:
+          context: ${{ inputs.context }}
+          file: ${{ inputs.file }}
+          push: true
+          tags: ${{ inputs.registry }}/${{ inputs.repo }}:${{ inputs.tag }}
 
-#           # This flag represents a bug in deployment,
-#           # adding it partially solves it, however it
-#           # must be checked
-#           provenance: ${{ inputs.provenance }}
+          # This flag represents a bug in deployment,
+          # adding it partially solves it, however it
+          # must be checked
+          provenance: ${{ inputs.provenance }}
 
-
-
-
-      - name: Docker buildx
-        run: |
-          docker buildx build --file ${{ inputs.file }} --provenance '${{ inputs.provenance }}' \
-          --tag ${{ inputs.registry }}/${{ inputs.repo }}:${{ inputs.tag }} \
-          --tag ${{ inputs.repo }}:${{ inputs.tag }} \
-          --output type=docker ${{ inputs.context }}
-
-
-
-
-
-
-      - name: Image list
-        run: docker image ls
-
-
-
-      - name: Pip list
-        run: docker container run -t --rm ${{ inputs.repo }}:${{ inputs.tag }} pip list
-
-
-
-
-
-
-
-
-      - name: Trivy install
-        run: |
-          curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | \
-          sh -s -- -b /usr/local/bin ${{ inputs.trivy_version }}
-
-      - name: Trivy scan
-        run: |
-          trivy --debug image --severity ${{ inputs.severity }} --vuln-type ${{ inputs.vuln-type }} \
-             --exit-code ${{ inputs.exit-code }} --format ${{ inputs.format }} --no-progress \
-             ${{ inputs.repo }}:${{ inputs.tag }}
-
-
-
-
-      - name: Trivy scan
-        run: |
-          trivy --debug image --severity ${{ inputs.severity }} --vuln-type ${{ inputs.vuln-type }} \
-             --exit-code ${{ inputs.exit-code }} --format ${{ inputs.format }} --no-progress \
-             ${{ inputs.repo }}:${{ inputs.tag }}
-
-
-
-      - name: Trivy scan
-        run: |
-          trivy --debug image --severity ${{ inputs.severity }} --vuln-type ${{ inputs.vuln-type }} \
-             --exit-code ${{ inputs.exit-code }} --format ${{ inputs.format }} \
-             quay.io/droposhado/panorama
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: ${{ inputs.registry }}/${{ inputs.repo }}:${{ inputs.tag }}
+          format: ${{ inputs.format }}
+          exit-code: ${{ inputs.exit-code }}
+          ignore-unfixed: ${{ inputs.ignore-unfixed }}
+          vuln-type: ${{ inputs.vuln-type }}
+          severity: ${{ inputs.severity }}
