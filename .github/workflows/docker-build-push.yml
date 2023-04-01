@@ -28,9 +28,17 @@ on:
       tag:
         required: false
         type: string
+      semantic:
+        required: false
+        default: false
+        type: boolean
       provenance:
         required: false
         default: false
+        description: |
+          This flag represents a bug in deployment,
+          adding it partially solves it, however it
+          must be checked
         type: boolean
 
     # Trivy
@@ -92,18 +100,68 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
-      - name: Build
+
+
+
+
+
+
+
+
+
+
+      - name: Build && Push
+        if: inputs.semantic == 'false'
         uses: docker/build-push-action@v3
         with:
           context: ${{ inputs.context }}
           file: ${{ inputs.file }}
+          provenance: ${{ inputs.provenance }}
           push: true
           tags: ${{ inputs.registry }}/${{ inputs.repo }}:${{ inputs.tag }}
 
-          # This flag represents a bug in deployment,
-          # adding it partially solves it, however it
-          # must be checked
+
+
+
+
+
+
+
+
+
+
+
+
+      - name: Extract tag
+        if: inputs.semantic == 'true'
+        uses: ncipollo/semantic-version-action@v1
+        id: tag
+
+      - name: Build && Push
+        if: inputs.semantic == 'true'
+        uses: docker/build-push-action@v3
+        with:
+          context: ${{ inputs.context }}
+          file: ${{ inputs.file }}
           provenance: ${{ inputs.provenance }}
+          push: true
+          tags: |
+            ${{ inputs.registry }}/${{ inputs.repo }}:${{ steps.version.outputs.major }}.${{ steps.version.outputs.minor }}.${{ steps.version.outputs.patch }}
+            ${{ inputs.registry }}/${{ inputs.repo }}:${{ steps.version.outputs.major }}.${{ steps.version.outputs.minor }}
+            ${{ inputs.registry }}/${{ inputs.repo }}:${{ steps.version.outputs.major }}
+
+
+
+
+
+
+
+
+
+
+
+
+
 
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
