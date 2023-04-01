@@ -28,9 +28,9 @@ on:
       tag:
         required: false
         type: string
-      semantic:
+      push:
         required: false
-        default: false
+        default: true
         type: boolean
       provenance:
         required: false
@@ -102,22 +102,14 @@ jobs:
 
 
 
-
-
-
-
-
-
-
-
       - name: Build && Push
-        if: inputs.semantic == 'false'
+        if: inputs.tag == 'latest'
         uses: docker/build-push-action@v3
         with:
           context: ${{ inputs.context }}
           file: ${{ inputs.file }}
           provenance: ${{ inputs.provenance }}
-          push: true
+          push: ${{ inputs.push }}
           tags: ${{ inputs.registry }}/${{ inputs.repo }}:${{ inputs.tag }}
 
 
@@ -128,35 +120,25 @@ jobs:
 
 
 
-
-
-
-
-      - name: Extract tag
-        if: inputs.semantic == 'true'
-        uses: ncipollo/semantic-version-action@v1
-        id: tag
+      - name: "Parse semantic tag"
+        if: inputs.tag != 'latest'
+        id: semver
+        uses: Steffo99/actions-semver@v0.2.0
+        with:
+          string: ${{ inputs.tag }}
 
       - name: Build && Push
-        if: inputs.semantic == 'true'
+        if: inputs.tag != 'latest'
         uses: docker/build-push-action@v3
         with:
           context: ${{ inputs.context }}
           file: ${{ inputs.file }}
           provenance: ${{ inputs.provenance }}
-          push: true
+          push: ${{ inputs.push }}
           tags: |
-            ${{ inputs.registry }}/${{ inputs.repo }}:${{ steps.version.outputs.major }}.${{ steps.version.outputs.minor }}.${{ steps.version.outputs.patch }}
-            ${{ inputs.registry }}/${{ inputs.repo }}:${{ steps.version.outputs.major }}.${{ steps.version.outputs.minor }}
-            ${{ inputs.registry }}/${{ inputs.repo }}:${{ steps.version.outputs.major }}
-
-
-
-
-
-
-
-
+            ${{ inputs.registry }}/${{ inputs.repo }}:${{ steps.semver.outputs.major }}.${{ steps.semver.outputs.minor }}.${{ steps.semver.outputs.patch }}
+            ${{ inputs.registry }}/${{ inputs.repo }}:${{ steps.semver.outputs.major }}.${{ steps.semver.outputs.minor }}
+            ${{ inputs.registry }}/${{ inputs.repo }}:${{ steps.semver.outputs.major }}
 
 
 
