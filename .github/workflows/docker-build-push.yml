@@ -15,6 +15,9 @@ on:
         required: false
         default: ./Dockerfile
         type: string
+      platforms:
+        required: false
+        type: string
       registry:
         required: true
         default: 'docker.io'
@@ -105,6 +108,9 @@ jobs:
         with:
           context: ${{ inputs.context }}
           file: ${{ inputs.file }}
+          platforms: |
+            linux/amd64
+            linux/arm64
           provenance: ${{ inputs.provenance }}
           push: ${{ inputs.push }}
           tags: ${{ inputs.registry }}/${{ inputs.repo }}:${{ inputs.tag }}
