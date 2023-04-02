@@ -70,6 +70,16 @@ on:
         required: false
         default: true
         type: boolean
+      skip-files:
+        required: false
+        default: ''
+        description: 'comma separated list of dirs'
+        type: string
+      skip-dirs:
+        required: false
+        default: ''
+        description: 'comma separated list of files'
+        type: string
 
     secrets:
 
@@ -124,3 +134,5 @@ jobs:
           ignore-unfixed: ${{ inputs.ignore-unfixed }}
           vuln-type: ${{ inputs.vuln-type }}
           severity: ${{ inputs.severity }}
+          skip-files: ${{ inputs.skip-files }}
+          skip-dirs: ${{ inputs.skip-dirs }}
