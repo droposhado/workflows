@@ -1,23 +1,33 @@
-name: "Terraform"
+name: Terraform best practices
+
+# I know that I could install the packages here using this workflow,
+# but I prefer that each package has this as an explicit dependency
+# in a file, named requirements-dev.txt
 
 on:
-  push:
-    branches:
-      - main
-      - feature*
-      - hotfix*
+  workflow_call:
+    inputs:
+      dir:
+        required: false
+        default: .
+        type: string
 
-    paths:
-      - terraform/**
+
+
+      terraform_version:
+        required: false
+        default: 1.4.6
+
 
 jobs:
 
   terrascan:
-    runs-on: ubuntu-latest
     name: terrascan-action
+    runs-on: ubuntu-latest
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
+
     - name: Run Terrascan
       id: terrascan
       uses: accurics/terrascan-action@main
@@ -26,17 +36,12 @@ jobs:
         iac_version: 'v14'
         policy_type: 'aws'
         only_warn: true
-        #scm_token: ${{ secrets.ACCESS_TOKEN }}
-        #verbose: true
-        #sarif_upload: true
-        #non_recursive:
-        #iac_dir:
-        #policy_path:
-        #skip_rules:
-        #config_path:
-        #find_vulnerabilities:
-        #webhook_url:
-        #webhook_token:
+        verbose: true
+        iac_dir: ${{ inputs.dir }}
+        policy_path:
+        skip_rules:
+        config_path:
+        find_vulnerabilities:
 
   terraform:
     name: "Terraform"
@@ -45,16 +50,16 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./terraform
+        working-directory: ${{ inputs.dir }}
 
     steps:
       - name: Checkout
         uses: actions/checkout@v2
 
       - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v1
+        uses: hashicorp/setup-terraform@v2
         with:
-          # terraform_version: 0.13.0:
+          terraform_version: ${{ inputs.terraform_version }}
           cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
 
       - name: Terraform Format
