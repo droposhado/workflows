@@ -3,12 +3,9 @@ name: Shellscript best practices
 on:
   workflow_call:
     inputs:
-      context:
+      files:
         required: false
-        default: .
-        type: string
-      python_version:
-        required: true
+        default: ./*.sh
         type: string
 
 jobs:
@@ -25,4 +22,4 @@ jobs:
           sudo apt-get install shellcheck
 
       - name: Check files
-        run: shellcheck --shell=bash *.sh
+        run: shellcheck --shell=bash ${{ inputs.files }}
