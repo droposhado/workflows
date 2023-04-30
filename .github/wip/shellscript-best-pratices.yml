@@ -1,0 +1,32 @@
+name: Shellscript best practices
+
+# I know that I could install the packages here using this workflow,
+# but I prefer that each package has this as an explicit dependency
+# in a file, named requirements-dev.txt
+
+on:
+  workflow_call:
+    inputs:
+      context:
+        required: false
+        default: .
+        type: string
+      python_version:
+        required: true
+        type: string
+
+jobs:
+
+  shell-linter:
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Checkout repo
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install shellcheck
+
+      - name: Checkout repo
+        run: shellcheck --shell=bash *.sh
