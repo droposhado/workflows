@@ -8,12 +8,50 @@ on:
         default: .
         type: string
 
-
+      apply:
+        required: false
+        default: false
+        type: boolean
 
       terraform_version:
         required: false
         default: 1.4.6
+        type: string
 
+      iac_version:
+        required: false
+        default: 'v14'
+        type: string
+
+      policy_type:
+        required: false
+        default: 'all'
+        type: string
+
+
+
+      only_warn:
+        required: false
+        default: false
+        type: boolean
+
+
+
+      policy_path:
+        required: false
+        type: string
+
+      skip_rules:
+        required: false
+        type: string
+
+
+
+
+      verbose:
+        required: false
+        default: false
+        type: boolean
 
 jobs:
 
@@ -29,15 +67,13 @@ jobs:
       uses: accurics/terrascan-action@main
       with:
         iac_type: 'terraform'
-        iac_version: 'v14'
-        policy_type: 'aws'
-        only_warn: true
-        verbose: true
+        iac_version: ${{ inputs.iac_version }}
+        policy_type: ${{ inputs.policy_type }}
+        only_warn: ${{ inputs.only_warn }}
+        verbose: ${{ inputs.verbose }}
         iac_dir: ${{ inputs.dir }}
-        policy_path:
-        skip_rules:
-        config_path:
-        find_vulnerabilities:
+        policy_path: ${{ inputs.policy_path }}
+        skip_rules: ${{ inputs.skip_rules }}
 
   terraform:
     name: "Terraform"
@@ -59,15 +95,12 @@ jobs:
           cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
 
       - name: Terraform Format
-        id: fmt
         run: terraform fmt -check
 
       - name: Terraform Init
-        id: init
         run: terraform init
       
       - name: Terraform Validate
-        id: validate
         run: terraform validate -no-color
 
       - name: Terraform Plan
@@ -76,5 +109,5 @@ jobs:
         run: terraform plan -no-color
 
       - name: Terraform Apply
-        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push' && inputs.apply
         run: terraform apply -auto-approve
