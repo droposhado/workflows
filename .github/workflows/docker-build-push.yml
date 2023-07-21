@@ -88,9 +88,9 @@ on:
     # Registry
 
       username:
-        required: true
+        required: false
       password:
-        required: true
+        required: false
 
 jobs:
   login-build-push:
