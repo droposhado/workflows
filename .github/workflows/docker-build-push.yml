@@ -21,7 +21,7 @@ on:
         description: 'comma separated list of platforms'
         type: string
       registry:
-        required: true
+        required: false
         default: 'docker.io'
         # default: 'quay.io'
         # default: 'ghcr.io'
