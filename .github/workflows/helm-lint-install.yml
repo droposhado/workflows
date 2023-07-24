@@ -69,4 +69,5 @@ jobs:
 
       - name: Install ${{ inputs.release_version }} release of ${{ inputs.release_name }}
         if: inputs.release_version != ''
-        run: helm install ${{ inputs.release_name }} ${{ inputs.repo_slug }} --version ${{ inputs.release_version }}
+        run: helm install ${{ inputs.release_name }}-${{ inputs.release_version }} \
+             ${{ inputs.repo_slug }} --version ${{ inputs.release_version }}
