@@ -7,6 +7,9 @@ on:
       path:
         required: true
         type: string
+      name:
+        required: true
+        type: string
       repo:
         required: true
         type: string
@@ -14,7 +17,8 @@ on:
         required: true
         type: string
       version:
-        required: true
+        required: false
+        default: ''
         type: string
 
 jobs:
@@ -36,10 +40,15 @@ jobs:
       - run: yamllint .
 
       - name: Adding ${{ inputs.name }} repo
-        run: helm repo add ${{ inputs.name }} ${{ inputs.repo_url }}
+        run: helm repo add ${{ inputs.repo_name }} ${{ inputs.repo_url }}
 
       - name: Update Helm repos
         run: helm repo update
 
+      - name: Install latest release of ${{ inputs.name }}
+        if: inputs.version == ''
+        run: helm install ${{ inputs.name }} ${{ inputs.repo_slug }}
+
       - name: Install ${{ inputs.version }} release of ${{ inputs.name }}
-        run: helm install ${{ inputs.name }} ${{ inputs.repo }}
+        if: inputs.version != ''
+        run: helm install ${{ inputs.name }} ${{ inputs.repo_slug }} --version ${{ inputs.version }}
