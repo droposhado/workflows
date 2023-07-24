@@ -5,18 +5,20 @@ on:
     inputs:
 
       path:
-        required: false
-        default: .
+        required: true
         type: string
       repo:
-        required: false
+        required: true
+        type: string
+      repo_url:
+        required: true
         type: string
       version:
-        required: false
+        required: true
         type: string
 
 jobs:
-  login-build-push:
+  lint-install:
     runs-on: ubuntu-latest
     defaults:
       run:
