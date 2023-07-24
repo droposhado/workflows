@@ -7,8 +7,12 @@ on:
       path:
         required: true
         type: string
-      name:
+      release_name:
         required: true
+        type: string
+      release_version:
+        required: false
+        default: ''
         type: string
       repo_name:
         required: true
@@ -18,10 +22,6 @@ on:
         type: string
       repo_url:
         required: true
-        type: string
-      version:
-        required: false
-        default: ''
         type: string
       helm_version:
         required: false
@@ -63,10 +63,10 @@ jobs:
       - name: Update Helm repos
         run: helm repo update
 
-      - name: Install latest release of ${{ inputs.name }}
+      - name: Install latest release of ${{ inputs.release_name }}
         if: inputs.version == ''
-        run: helm install ${{ inputs.name }} ${{ inputs.repo_slug }}
+        run: helm install ${{ inputs.release_name }} ${{ inputs.repo_slug }}
 
-      - name: Install ${{ inputs.version }} release of ${{ inputs.name }}
-        if: inputs.version != ''
-        run: helm install ${{ inputs.name }} ${{ inputs.repo_slug }} --version ${{ inputs.version }}
+      - name: Install ${{ inputs.release_version }} release of ${{ inputs.release_name }}
+        if: inputs.release_version != ''
+        run: helm install ${{ inputs.release_name }} ${{ inputs.repo_slug }} --version ${{ inputs.release_version }}
