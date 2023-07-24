@@ -10,7 +10,7 @@ on:
       name:
         required: true
         type: string
-      repo:
+      repo_name:
         required: true
         type: string
       repo_url:
