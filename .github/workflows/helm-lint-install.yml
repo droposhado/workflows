@@ -1,0 +1,43 @@
+name: 'Helm: lint and install'
+
+on:
+  workflow_call:
+    inputs:
+
+      path:
+        required: false
+        default: .
+        type: string
+      repo:
+        required: false
+        type: string
+      version:
+        required: false
+        type: string
+
+jobs:
+  login-build-push:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ inputs.path }}
+
+    permissions:
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install yamllint
+        run: sudo apt-get install yamllint
+
+      - run: yamllint .
+
+      - name: Adding ${{ inputs.name }} repo
+        run: helm repo add ${{ inputs.name }} ${{ inputs.repo_url }}
+
+      - name: Update Helm repos
+        run: helm repo update
+
+      - name: Install ${{ inputs.version }} release of ${{ inputs.name }}
+        run: helm install ${{ inputs.name }} ${{ inputs.repo }}
