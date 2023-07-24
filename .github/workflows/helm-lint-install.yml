@@ -37,8 +37,13 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - run: helm version
+
       - name: Install yamllint
         run: sudo apt-get install yamllint
+
+      - name: Install yamllint
+        run: yamllint -v
 
       - run: yamllint .
 
