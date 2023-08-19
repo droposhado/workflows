@@ -29,6 +29,11 @@ on:
         type: string
 
 
+      tflint_version:
+        required: false
+        default: 'v0.44.1'
+        type: string
+
 
       only_warn:
         required: false
@@ -58,6 +63,10 @@ jobs:
   terrascan:
     name: terrascan-action
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ inputs.dir }}
+
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
@@ -75,10 +84,44 @@ jobs:
         policy_path: ${{ inputs.policy_path }}
         skip_rules: ${{ inputs.skip_rules }}
 
-  terraform:
+  tflint:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ inputs.dir }}
+
+    steps:
+    - uses: actions/checkout@v3
+      name: Checkout source code
+
+    - uses: actions/cache@v3
+      name: Cache plugin dir
+      with:
+        path: ~/.tflint.d/plugins
+        key: ubuntu-latest-tflint-${{ hashFiles('.tflint.hcl') }}
+
+    - uses: terraform-linters/setup-tflint@v3
+      name: Setup TFLint
+      with:
+        tflint_version: ${{ inputs.tflint_version }}
+
+    - name: Show version
+      run: tflint --version
+
+    - name: Init TFLint
+      run: tflint --init
+      env:
+        # https://github.com/terraform-linters/tflint/blob/master/docs/user-guide/plugins.md#avoiding-rate-limiting
+        GITHUB_TOKEN: ${{ github.token }}
+
+    - name: Run TFLint
+      run: tflint -f compact
+
+  terraform-native:
     name: "Terraform"
     needs:
       - terrascan
+      - tflint
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -103,11 +146,4 @@ jobs:
       - name: Terraform Validate
         run: terraform validate -no-color
 
-      - name: Terraform Plan
-        id: plan
-        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-        run: terraform plan -no-color
-
-      - name: Terraform Apply
-        if: github.ref == 'refs/heads/main' && github.event_name == 'push' && inputs.apply
-        run: terraform apply -auto-approve
+      # needs run plan and upload to summary
