@@ -145,5 +145,3 @@ jobs:
       
       - name: Terraform Validate
         run: terraform validate -no-color
-
-      # needs run plan and upload to summary
