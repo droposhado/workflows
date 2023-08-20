@@ -51,6 +51,10 @@ on:
         type: string
 
 
+      terrascan_sarif_upload:
+        required: false
+        default: false
+        type: boolean
 
       verbose:
         required: false
@@ -83,6 +87,13 @@ jobs:
           iac_dir: ${{ inputs.dir }}
           policy_path: ${{ inputs.policy_path }}
           skip_rules: ${{ inputs.skip_rules }}
+          sarif_upload: ${{ inputs.terrascan_sarif_upload }}
+  
+      - name: Upload SARIF file
+        if: inputs.terrascan_sarif_upload == 'true'
+        uses: github/codeql-action/upload-sarif@v1
+        with:
+          sarif_file: terrascan.sarif
 
   tflint:
     runs-on: ubuntu-latest
