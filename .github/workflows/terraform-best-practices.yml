@@ -23,7 +23,6 @@ on:
         default: 'all'
         type: string
 
-
       tflint_version:
         required: false
         default: 'v0.44.1'
@@ -34,11 +33,8 @@ on:
         default: false
         type: string
 
-
       only_warn:
         type: boolean
-
-
 
       policy_path:
         required: false
