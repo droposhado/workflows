@@ -15,7 +15,7 @@ on:
 
       iac_version:
         required: false
-        default: 'v14'
+        default: 'v15'
         type: string
 
       policy_type:
