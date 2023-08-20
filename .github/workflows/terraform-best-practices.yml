@@ -52,12 +52,11 @@ on:
 
 
 
-
       verbose:
         required: false
         default: false
         type: boolean
-     
+
     secrets:
       tf_api_token:
         required: true
@@ -71,7 +70,7 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-  
+
       - name: Run Terrascan
         id: terrascan
         uses: tenable/terrascan-action@main
@@ -131,6 +130,7 @@ jobs:
         working-directory: ${{ inputs.dir }}
         run: tflint -f compact
 
+      # Upload scanning
 
       - name: Run TFLint
         if: inputs.tflint_upload_sarif == 'true'
@@ -175,6 +175,10 @@ jobs:
       - name: Terraform Format
         working-directory: ${{ inputs.dir }}
         run: terraform fmt -check
+
+      - name: Terraform Init
+        working-directory: ${{ inputs.dir }}
+        run: terraform init
 
       - name: Terraform Validate
         working-directory: ${{ inputs.dir }}
