@@ -69,7 +69,7 @@ jobs:
   
       - name: Run Terrascan
         id: terrascan
-        uses: accurics/terrascan-action@main
+        uses: tenable/terrascan-action@main
         with:
           iac_type: 'terraform'
           iac_version: ${{ inputs.iac_version }}
