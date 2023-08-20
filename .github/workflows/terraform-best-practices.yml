@@ -29,6 +29,11 @@ on:
         default: 'v0.44.1'
         type: string
 
+      tflint_upload_sarif:
+        required: false
+        default: false
+        type: string
+
 
       only_warn:
         required: false
@@ -119,13 +124,23 @@ jobs:
           # https://github.com/terraform-linters/tflint/blob/master/docs/user-guide/plugins.md#avoiding-rate-limiting
           GITHUB_TOKEN: ${{ github.token }}
 
+      # Skip upload scanning
+
       - name: Run TFLint
+        if: inputs.tflint_upload_sarif == 'false'
+        working-directory: ${{ inputs.dir }}
+        run: tflint -f compact
+
+
+      - name: Run TFLint
+        if: inputs.tflint_upload_sarif == 'true'
         working-directory: ${{ inputs.dir }}
         continue-on-error: true
         id: tflint_run
         run: tflint -f sarif > results.sarif
 
       - name: Upload SARIF file
+        if: inputs.tflint_upload_sarif == 'true'
         uses: github/codeql-action/upload-sarif@v2
         with:
           # Path to SARIF file relative to the root of the repository
@@ -135,7 +150,9 @@ jobs:
           category: tflint
 
       - name: Force status before upload
-        if: steps.tflint_run.outcome != 'success'
+        if: |
+          steps.tflint_run.outcome != 'success' && \
+          inputs.tflint_upload_sarif == 'true'
         run: exit 1
 
   terraform-native:
