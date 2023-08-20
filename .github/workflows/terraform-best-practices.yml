@@ -99,6 +99,15 @@ jobs:
         path: ~/.tflint.d/plugins
         key: ubuntu-latest-tflint-${{ hashFiles('.tflint.hcl') }}
 
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v2
+      with:
+        terraform_version: ${{ inputs.terraform_version }}
+        cli_config_credentials_token: ${{ secrets.tf_api_token }}
+
+    - name: Terraform Init
+      run: terraform init
+
     - uses: terraform-linters/setup-tflint@v3
       name: Setup TFLint
       with:
