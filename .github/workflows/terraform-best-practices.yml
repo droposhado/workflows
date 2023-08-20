@@ -8,11 +8,6 @@ on:
         default: .
         type: string
 
-      apply:
-        required: false
-        default: false
-        type: boolean
-
       terraform_version:
         required: false
         default: 1.5.4
