@@ -80,7 +80,6 @@ jobs:
           iac_type: 'terraform'
           iac_version: ${{ inputs.iac_version }}
           policy_type: ${{ inputs.policy_type }}
-          only_warn: ${{ inputs.only_warn }}
           verbose: ${{ inputs.verbose }}
           iac_dir: ${{ inputs.dir }}
           policy_path: ${{ inputs.policy_path }}
