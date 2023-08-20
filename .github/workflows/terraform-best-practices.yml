@@ -67,21 +67,23 @@ jobs:
         working-directory: ${{ inputs.dir }}
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v3
+  
+      - name: Run Terrascan
+        id: terrascan
+        uses: accurics/terrascan-action@main
+        with:
+          iac_type: 'terraform'
+          iac_version: ${{ inputs.iac_version }}
+          policy_type: ${{ inputs.policy_type }}
+          only_warn: ${{ inputs.only_warn }}
+          verbose: ${{ inputs.verbose }}
+          iac_dir: ${{ inputs.dir }}
+          policy_path: ${{ inputs.policy_path }}
+          skip_rules: ${{ inputs.skip_rules }}
 
-    - name: Run Terrascan
-      id: terrascan
-      uses: accurics/terrascan-action@main
-      with:
-        iac_type: 'terraform'
-        iac_version: ${{ inputs.iac_version }}
-        policy_type: ${{ inputs.policy_type }}
-        only_warn: ${{ inputs.only_warn }}
-        verbose: ${{ inputs.verbose }}
-        iac_dir: ${{ inputs.dir }}
-        policy_path: ${{ inputs.policy_path }}
-        skip_rules: ${{ inputs.skip_rules }}
+      - run: ls -lha
 
   tflint:
     runs-on: ubuntu-latest
@@ -90,40 +92,42 @@ jobs:
         working-directory: ${{ inputs.dir }}
 
     steps:
-    - uses: actions/checkout@v3
-      name: Checkout source code
+      - uses: actions/checkout@v3
+        name: Checkout source code
 
-    - uses: actions/cache@v3
-      name: Cache plugin dir
-      with:
-        path: ~/.tflint.d/plugins
-        key: ubuntu-latest-tflint-${{ hashFiles('.tflint.hcl') }}
+      - uses: actions/cache@v3
+        name: Cache plugin dir
+        with:
+          path: ~/.tflint.d/plugins
+          key: ubuntu-latest-tflint-${{ hashFiles('.tflint.hcl') }}
 
-    - name: Setup Terraform
-      uses: hashicorp/setup-terraform@v2
-      with:
-        terraform_version: ${{ inputs.terraform_version }}
-        cli_config_credentials_token: ${{ secrets.tf_api_token }}
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: ${{ inputs.terraform_version }}
+          cli_config_credentials_token: ${{ secrets.tf_api_token }}
 
-    - name: Terraform Init
-      run: terraform init
+      - name: Terraform Init
+        run: terraform init
 
-    - uses: terraform-linters/setup-tflint@v3
-      name: Setup TFLint
-      with:
-        tflint_version: ${{ inputs.tflint_version }}
+      - uses: terraform-linters/setup-tflint@v3
+        name: Setup TFLint
+        with:
+          tflint_version: ${{ inputs.tflint_version }}
 
-    - name: Show version
-      run: tflint --version
+      - name: Show version
+        run: tflint --version
 
-    - name: Init TFLint
-      run: tflint --init
-      env:
-        # https://github.com/terraform-linters/tflint/blob/master/docs/user-guide/plugins.md#avoiding-rate-limiting
-        GITHUB_TOKEN: ${{ github.token }}
+      - name: Init TFLint
+        run: tflint --init
+        env:
+          # https://github.com/terraform-linters/tflint/blob/master/docs/user-guide/plugins.md#avoiding-rate-limiting
+          GITHUB_TOKEN: ${{ github.token }}
 
-    - name: Run TFLint
-      run: tflint -f compact
+      - name: Run TFLint
+        run: tflint -f compact
+
+      - run: ls -lha
 
   terraform-native:
     name: "Terraform"
@@ -137,7 +141,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
