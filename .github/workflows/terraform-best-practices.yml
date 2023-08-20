@@ -155,8 +155,7 @@ jobs:
           inputs.tflint_upload_sarif == 'true'
         run: exit 1
 
-  terraform-native:
-    name: "Terraform"
+  terraform-native-checks:
     needs:
       - terrascan
       - tflint
