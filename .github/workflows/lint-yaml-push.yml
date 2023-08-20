@@ -1,0 +1,14 @@
+name: YAML best practices
+
+on:
+  push:
+    branches:
+      - main
+
+  workflow_dispatch:
+
+jobs:
+  best-practices:
+    uses: droposhado/workflows/.github/workflows/yaml-best-practices.yml@main
+    with:
+      dir: '.github/workflows'
