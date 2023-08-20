@@ -151,7 +151,7 @@ jobs:
 
       - name: Force status before upload
         if: |
-          steps.tflint_run.outcome != 'success' && \
+          steps.tflint_run.outcome != 'success' &&
           inputs.tflint_upload_sarif == 'true'
         run: exit 1
 
