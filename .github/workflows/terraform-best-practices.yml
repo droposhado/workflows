@@ -15,7 +15,7 @@ on:
 
       terraform_version:
         required: false
-        default: 1.4.6
+        default: 1.5.4
         type: string
 
       iac_version:
