@@ -7,6 +7,14 @@ on:
         required: false
         default: .
         type: string
+      workspace:
+        required: false
+        type: string
+      terraform_version:
+        required: false
+        default: '1.5.4'
+        type: string
+        
 
 jobs:
   apply:
@@ -29,15 +37,15 @@ jobs:
         uses: hashicorp/tfc-workflows-github/actions/upload-configuration@v1.0.0
         id: plan-upload
         with:
-          workspace: ${{ env.TF_WORKSPACE }}
-          directory: ${{ env.CONFIG_DIRECTORY }}
+          workspace: ${{ inputs.workspace }}
+          directory: ${{ inputs.dir }}
           speculative: true
 
       - name: Create Plan Run
         uses: hashicorp/tfc-workflows-github/actions/create-run@v1.0.0
         id: plan-run
         with:
-          workspace: ${{ env.TF_WORKSPACE }}
+          workspace: ${{ inputs.workspace }}
           configuration_version: ${{ steps.plan-upload.outputs.configuration_version_id }}
           plan_only: true
 
