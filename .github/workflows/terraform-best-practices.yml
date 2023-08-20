@@ -62,9 +62,6 @@ jobs:
   terrascan:
     name: terrascan-action
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ${{ inputs.dir }}
 
     steps:
       - name: Checkout repository
@@ -108,6 +105,7 @@ jobs:
           cli_config_credentials_token: ${{ secrets.tf_api_token }}
 
       - name: Terraform Init
+        working-directory: ${{ inputs.dir }}
         run: terraform init
 
       - uses: terraform-linters/setup-tflint@v3
@@ -116,15 +114,18 @@ jobs:
           tflint_version: ${{ inputs.tflint_version }}
 
       - name: Show version
+        working-directory: ${{ inputs.dir }}
         run: tflint --version
 
       - name: Init TFLint
         run: tflint --init
+        working-directory: ${{ inputs.dir }}
         env:
           # https://github.com/terraform-linters/tflint/blob/master/docs/user-guide/plugins.md#avoiding-rate-limiting
           GITHUB_TOKEN: ${{ github.token }}
 
       - name: Run TFLint
+        working-directory: ${{ inputs.dir }}
         run: tflint -f compact
 
       - run: ls -lha
@@ -135,9 +136,6 @@ jobs:
       - terrascan
       - tflint
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ${{ inputs.dir }}
 
     steps:
       - name: Checkout
@@ -150,10 +148,15 @@ jobs:
           cli_config_credentials_token: ${{ secrets.tf_api_token }}
 
       - name: Terraform Format
+        working-directory: ${{ inputs.dir }}
         run: terraform fmt -check
 
       - name: Terraform Init
+        working-directory: ${{ inputs.dir }}
         run: terraform init
       
       - name: Terraform Validate
+        working-directory: ${{ inputs.dir }}
         run: terraform validate -no-color
+
+      - run: ls -lha
