@@ -41,29 +41,19 @@ jobs:
           terraform_version: ${{ inputs.terraform_version }}
     
       - name: Upload Configuration
-        uses: hashicorp/tfc-workflows-github/actions/upload-configuration@v1.0.0
+        uses: hashicorp/tfc-workflows-github/actions/upload-configuration@v1.0.4
         id: plan-upload
         with:
           organization: ${{ inputs.organization }}
           workspace: ${{ inputs.workspace }}
           directory: ${{ inputs.dir }}
-          speculative: true
 
-      - name: Create Plan Run
+      - name: Apply Run
         uses: hashicorp/tfc-workflows-github/actions/create-run@v1.0.0
-        id: plan-run
         with:
           organization: ${{ inputs.organization }}
           workspace: ${{ inputs.workspace }}
           configuration_version: ${{ steps.plan-upload.outputs.configuration_version_id }}
-          plan_only: true
-
-      - uses: hashicorp/tfc-workflows-github/actions/apply-run@v1.0.4
-        id: apply
-        with:
-          organization: ${{ inputs.organization }}
-          run: ${{ steps.plan-run.outputs.run_id }}
-          comment: "Apply Run from GitHub Actions CI ${{ github.sha }}"
 
       # - name: Summary
       #   run: |
