@@ -64,6 +64,14 @@ jobs:
         with:
           plan: ${{ fromJSON(steps.plan-run.outputs.payload).data.relationships.plan.data.id }}
 
+      - uses: hashicorp/tfc-workflows-github/actions/apply-run@v1.0.4
+        id: apply
+        with:
+          organization: ${{ inputs.organization }}
+          workspace: ${{ inputs.workspace }}
+          run: ${{ steps.plan-output.outputs.run_id }}
+          comment: "Apply Run from GitHub Actions CI ${{ github.sha }}"
+
       - name: Summary
         run: |
           echo "#### Terraform Cloud Plan Output
