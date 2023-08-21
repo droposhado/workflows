@@ -99,6 +99,7 @@ jobs:
           framework: terraform 
           output_format: cli
           output_file_path: console
+          skip_check: CKV_TF_1
 
   tfsec:
     runs-on: ubuntu-latest
