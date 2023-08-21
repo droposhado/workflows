@@ -14,7 +14,10 @@ on:
         required: false
         default: '1.5.4'
         type: string
-        
+
+    secrets:
+      tf_api_token:
+        required: true
 
 jobs:
   apply:
@@ -31,7 +34,7 @@ jobs:
         uses: hashicorp/setup-terraform@v2
         with:
           terraform_version: ${{ inputs.terraform_version }}
-          cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
+          cli_config_credentials_token: ${{ secrets.tf_api_token }}
     
       - name: Upload Configuration
         uses: hashicorp/tfc-workflows-github/actions/upload-configuration@v1.0.0
