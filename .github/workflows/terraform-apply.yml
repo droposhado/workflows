@@ -49,7 +49,7 @@ jobs:
           directory: ${{ inputs.dir }}
 
       - name: Apply Run
-        uses: hashicorp/tfc-workflows-github/actions/create-run@v1.0.0
+        uses: hashicorp/tfc-workflows-github/actions/create-run@v1.0.4
         with:
           organization: ${{ inputs.organization }}
           workspace: ${{ inputs.workspace }}
