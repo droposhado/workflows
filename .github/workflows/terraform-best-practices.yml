@@ -82,6 +82,10 @@ jobs:
       - uses: actions/checkout@v3
         name: Checkout source code
 
+      - name: Terraform Init
+        working-directory: ${{ inputs.dir }}
+        run: terraform init
+
       - name: Checkov GitHub Action
         uses: bridgecrewio/checkov-action@v12
         with:
