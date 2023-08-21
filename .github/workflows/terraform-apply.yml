@@ -23,7 +23,7 @@ jobs:
   apply:
     runs-on: ubuntu-latest
     env:
-      TF_API_TOKEN: ${{ secrets.TF_API_TOKEN }}
+      TF_API_TOKEN: ${{ secrets.tf_api_token }}
     defaults:
       run:
         working-directory: ${{ inputs.dir }}
