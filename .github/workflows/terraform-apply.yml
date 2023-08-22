@@ -31,6 +31,16 @@ jobs:
       run:
         working-directory: ${{ inputs.dir }}
 
+    outputs:
+      configuration_version_id: ${{ steps.apply.outputs.configuration_version_id  }}
+      plan_id: ${{ steps.apply.outputs.plan_id }}
+      plan_status: ${{ steps.apply.outputs.plan_status  }}
+      run_id: ${{ steps.apply.outputs.run_id  }}
+      run_link: ${{ steps.apply.outputs.run_link  }}
+      run_message: ${{ steps.apply.outputs.run_message  }}
+      run_status: ${{ steps.apply.outputs.run_status  }}
+      status: ${{ steps.apply.outputs.status  }}
+
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -49,6 +59,7 @@ jobs:
           directory: ${{ inputs.dir }}
 
       - name: Apply Run
+        id: apply
         uses: hashicorp/tfc-workflows-github/actions/create-run@v1.0.4
         with:
           organization: ${{ inputs.organization }}
