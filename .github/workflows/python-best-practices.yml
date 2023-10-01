@@ -107,6 +107,6 @@ jobs:
 
         run: |
           pip install -U -e ${{ inputs.context }}
-	        pip install -U ${{ inputs.context }}[test] 
+          pip install -U ${{ inputs.context }}[test] 
 
       - run: ${{ matrix.cmd }}
