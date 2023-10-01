@@ -119,6 +119,8 @@ jobs:
         if: |
           steps.check_requirement_file.outputs.files_exists == 'false' &&
           matrix.name == 'liccheck'
-        run: pip freeze > requirements.txt
+        run: |
+          pip install liccheck
+          pip freeze > requirements.txt
 
       - run: ${{ matrix.cmd }}
