@@ -109,4 +109,8 @@ jobs:
           pip install -U -e ${{ inputs.context }}
           pip install -U ${{ inputs.context }}[test] 
 
+      - name: generate requirements.txt to liccheck
+        if: matrix.name == 'liccheck'
+        run: pip freeze > requirements.txt
+
       - run: ${{ matrix.cmd }}
