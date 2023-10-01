@@ -105,9 +105,15 @@ jobs:
           steps.check_pyproject_file.outputs.files_exists == 'true' &&
           steps.check_requirement_file.outputs.files_exists == 'false'
 
-        run: |
-          pip install -U -e ${{ inputs.context }}
-          pip install -U ${{ inputs.context }}[test] 
+        run: pip install -U -e ${{ inputs.context }}
+
+      - name: Install pyproject.toml deps (tests)
+        # tests dependencies dont need checked
+        if: |
+          steps.check_pyproject_file.outputs.files_exists == 'true' &&
+          steps.check_requirement_file.outputs.files_exists == 'false' &&
+          matrix.name != 'liccheck'
+        run: pip install -U ${{ inputs.context }}[test] 
 
       - name: generate requirements.txt to liccheck
         if: |
