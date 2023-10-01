@@ -64,6 +64,9 @@ jobs:
           sudo apt-get update -qq
           sudo apt-get install coreutils
 
+      - name: flit install
+        run: pip install flit
+
       # requirements.txt block
 
       - name: Check file existence
@@ -101,7 +104,9 @@ jobs:
         if: |
           steps.check_pyproject_file.outputs.files_exists == 'true' &&
           ! steps.check_requirement_file.outputs.files_exists == 'true'
-        
-        run: pip install -U ${{ inputs.context }}
+
+        run: |
+          pip install -U -e ${{ inputs.context }}
+	        pip install -U ${{ inputs.context }}[test] 
 
       - run: ${{ matrix.cmd }}
