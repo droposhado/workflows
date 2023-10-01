@@ -103,7 +103,7 @@ jobs:
         # if requirements.txt exists, it is not necessary to use this
         if: |
           steps.check_pyproject_file.outputs.files_exists == 'true' &&
-          ! steps.check_requirement_file.outputs.files_exists == 'true'
+          steps.check_requirement_file.outputs.files_exists == 'false'
 
         run: |
           pip install -U -e ${{ inputs.context }}
