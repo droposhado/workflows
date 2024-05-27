@@ -111,16 +111,7 @@ jobs:
         # tests dependencies dont need checked
         if: |
           steps.check_pyproject_file.outputs.files_exists == 'true' &&
-          steps.check_requirement_file.outputs.files_exists == 'false' &&
-          matrix.name != 'liccheck'
+          steps.check_requirement_file.outputs.files_exists == 'false'
         run: pip install -U ${{ inputs.context }}[test] 
-
-      - name: generate requirements.txt to liccheck
-        if: |
-          steps.check_requirement_file.outputs.files_exists == 'false' &&
-          matrix.name == 'liccheck'
-        run: |
-          pip install liccheck
-          pip freeze > requirements.txt
 
       - run: ${{ matrix.cmd }}
