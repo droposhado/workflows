@@ -71,7 +71,7 @@ jobs:
 
       - name: Check file existence
         id: check_requirement_file
-        uses: andstor/file-existence-action@v2
+        uses: andstor/file-existence-action@v3
         with:
           files: "requirements.txt"
 
@@ -83,7 +83,7 @@ jobs:
 
       - name: Check file existence
         id: check_requirement_dev_file
-        uses: andstor/file-existence-action@v2
+        uses: andstor/file-existence-action@v3
         with:
           files: "requirements-dev.txt"
 
@@ -95,7 +95,7 @@ jobs:
 
       - name: Check file existence
         id: check_pyproject_file
-        uses: andstor/file-existence-action@v2
+        uses: andstor/file-existence-action@v3
         with:
           files: "pyproject.toml"
 
